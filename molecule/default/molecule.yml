@@ -1,0 +1,264 @@
+---
+dependency:
+  name: galaxy
+
+driver:
+  name: docker
+
+scenario:
+  name: "default"
+
+platforms:
+
+  # Alma Linux 8
+  - name: "alma-8"
+    image: "reg.sys.im/tools-molecule-systemd:al-8"
+    privileged: true
+    pre_build_image: true
+    tmpfs:
+      - /tmp
+      - /run
+      - /run/lock
+    security_opt:
+      - seccomp=unconfined
+    capabilities:
+      - CAP_SYS_ADMIN
+    override_command: false
+    cgroupns: private
+    groups:
+      - alma
+      - el
+
+  # Alma Linux 9
+  - name: "alma-9"
+    image: "reg.sys.im/tools-molecule-systemd:al-9"
+    privileged: true
+    pre_build_image: true
+    tmpfs:
+      - /tmp
+      - /run
+      - /run/lock
+    security_opt:
+      - seccomp=unconfined
+    capabilities:
+      - CAP_SYS_ADMIN
+    override_command: false
+    cgroupns: private
+    cgroup_parent: "docker.slice"
+    groups:
+      - alma
+      - el
+
+  # CentOS Linux 8 Stream
+  - name: "centos-8"
+    image: "reg.sys.im/tools-molecule-systemd:co-8"
+    privileged: true
+    pre_build_image: true
+    tmpfs:
+      - /tmp
+      - /run
+      - /run/lock
+    security_opt:
+      - seccomp=unconfined
+    capabilities:
+      - CAP_SYS_ADMIN
+    override_command: false
+    cgroupns: private
+    groups:
+      - centos
+      - el
+
+  # CentOS Linux 9 Stream
+  - name: "centos-9"
+    image: "reg.sys.im/tools-molecule-systemd:co-9"
+    privileged: true
+    pre_build_image: true
+    tmpfs:
+      - /tmp
+      - /run
+      - /run/lock
+    security_opt:
+      - seccomp=unconfined
+    capabilities:
+      - CAP_SYS_ADMIN
+    override_command: false
+    cgroupns: private
+    cgroup_parent: "docker.slice"
+    groups:
+      - centos
+      - el
+
+  # Oracle Linux 8
+  - name: "oracle-8"
+    image: "reg.sys.im/tools-molecule-systemd:ol-8"
+    privileged: true
+    pre_build_image: true
+    tmpfs:
+      - /tmp
+      - /run
+      - /run/lock
+    security_opt:
+      - seccomp=unconfined
+    capabilities:
+      - CAP_SYS_ADMIN
+    override_command: false
+    cgroupns: private
+    groups:
+      - oracle
+      - el
+
+  # Oracle Linux 9
+  - name: "oracle-9"
+    image: "reg.sys.im/tools-molecule-systemd:ol-9"
+    privileged: true
+    pre_build_image: true
+    tmpfs:
+      - /tmp
+      - /run
+      - /run/lock
+    security_opt:
+      - seccomp=unconfined
+    capabilities:
+      - CAP_SYS_ADMIN
+    override_command: false
+    cgroupns: private
+    cgroup_parent: "docker.slice"
+    groups:
+      - oracle
+      - el
+
+  # Rocky Linux 8
+  - name: "rocky-8"
+    image: "reg.sys.im/tools-molecule-systemd:rl-8"
+    privileged: true
+    pre_build_image: true
+    tmpfs:
+      - /tmp
+      - /run
+      - /run/lock
+    security_opt:
+      - seccomp=unconfined
+    capabilities:
+      - CAP_SYS_ADMIN
+    override_command: false
+    cgroupns: private
+    cgroup_parent: "docker.slice"
+    groups:
+      - rocky
+      - el
+
+  # Rocky Linux 9
+  - name: "rocky-9"
+    image: "reg.sys.im/tools-molecule-systemd:rl-9"
+    privileged: true
+    pre_build_image: true
+    tmpfs:
+      - /tmp
+      - /run
+      - /run/lock
+    security_opt:
+      - seccomp=unconfined
+    capabilities:
+      - CAP_SYS_ADMIN
+    override_command: false
+    cgroupns: private
+    cgroup_parent: "docker.slice"
+    groups:
+      - rocky
+      - el
+
+  # Debian 11 (bullseye)
+  - name: "debian-bullseye"
+    image: "reg.sys.im/tools-molecule-systemd:bullseye"
+    privileged: true
+    pre_build_image: true
+    tmpfs:
+      - /tmp
+      - /run
+      - /run/lock
+    security_opt:
+      - seccomp=unconfined
+    capabilities:
+      - CAP_SYS_ADMIN
+    override_command: false
+    cgroupns: private
+    cgroup_parent: "docker.slice"
+    groups:
+      - debian
+      - deb
+
+  # Debian 12 (bookworm)
+  - name: "debian-bookworm"
+    image: "reg.sys.im/tools-molecule-systemd:bookworm"
+    privileged: true
+    pre_build_image: true
+    tmpfs:
+      - /tmp
+      - /run
+      - /run/lock
+    security_opt:
+      - seccomp=unconfined
+    capabilities:
+      - CAP_SYS_ADMIN
+    override_command: false
+    cgroupns: private
+    cgroup_parent: "docker.slice"
+    groups:
+      - debian
+      - deb
+
+  # Ubuntu 20.04 (Focal)
+  - name: "ubuntu-focal"
+    image: "reg.sys.im/tools-molecule-systemd:focal"
+    privileged: true
+    pre_build_image: true
+    tmpfs:
+      - /tmp
+      - /run
+      - /run/lock
+    security_opt:
+      - seccomp=unconfined
+    capabilities:
+      - CAP_SYS_ADMIN
+    override_command: false
+    cgroupns: private
+    cgroup_parent: "docker.slice"
+    groups:
+      - ubuntu
+      - deb
+
+  # Ubuntu 22.04 (Jammy)
+  - name: "ubuntu-jammy"
+    image: "reg.sys.im/tools-molecule-systemd:jammy"
+    privileged: true
+    pre_build_image: true
+    tmpfs:
+      - /tmp
+      - /run
+      - /run/lock
+    security_opt:
+      - seccomp=unconfined
+    capabilities:
+      - CAP_SYS_ADMIN
+    override_command: false
+    cgroupns: private
+    cgroup_parent: "docker.slice"
+    groups:
+      - ubuntu
+      - deb
+
+provisioner:
+  name: ansible
+  lint:
+    name: ansible-lint
+    enabled: true
+  options:
+    vvv: true
+  inventory:
+    links:
+      .files: inventory/.files
+      host_vars: inventory/host_vars
+      group_vars: inventory/group_vars
+
+verifier:
+  name: ansible

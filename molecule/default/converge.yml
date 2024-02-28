@@ -4,6 +4,6 @@
   gather_facts: true
   any_errors_fatal: true
   tasks:
-    - name: Run common role
+    - name: Run nginx role
       ansible.builtin.include_role:
-        name: common
+        name: nginx

@@ -1,0 +1,13 @@
+# code: language=ansible
+---
+
+- name: "Nginx | Always | Install dependencies | Apt"
+  ansible.builtin.apt:
+    name: "{{ nginx_always_packages }}"
+    state: present
+    update_cache: true
+    force_apt_get: true
+    cache_valid_time: 3600
+  become: true
+  tags:
+    - always

@@ -1,0 +1,14 @@
+# code: language=ansible
+
+---
+
+- name: "Nginx | Install | Apt"
+  ansible.builtin.apt:
+    name: "{{ nginx_packages[nginx_branch] }}"
+    state: present
+    force_apt_get: true
+    update_cache: true
+  become: true
+  tags:
+    - nginx
+    - nginx-install

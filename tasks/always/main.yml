@@ -1,0 +1,46 @@
+# code: language=ansible
+---
+
+# Check distribution and version before run tasks
+
+- name: "Nginx | Always | Check distribution"
+  ansible.builtin.fail:
+    msg: "Unsupported distribution {{ dist_name }}"
+  when:
+    - dist_name not in ["alma", "centos", "debian", "oracle", "rocky", "ubuntu"]
+  tags:
+    - always
+
+- name: "Nginx | Always | Check alma/centos/oracle/rocky linux versions"
+  ansible.builtin.fail:
+    msg: "Unsupported distribution version {{ dist_name }}: {{ dist_version }}"
+  when:
+    - dist_name in ["alma", "centos", "oracle", "rocky"]
+    - dist_version not in ["8", "9"]
+  tags:
+    - always
+
+- name: "Nginx | Always | Check Debian / Ubuntu codenames"
+  ansible.builtin.fail:
+    msg: "Unsupported distribution version {{ dist_name }}: {{ dist_codename }}"
+  when:
+    - dist_name in ["debian", "ubuntu"]
+    - dist_codename not in ["buster", "bullseye", "bookworm", "focal", "jammy"]
+  tags:
+    - always
+
+# Include distribution specified vars
+
+- name: "Nginx | Always | Include distribution vars"
+  ansible.builtin.include_vars: "{{ dist_name }}.yml"
+  tags:
+    - always
+
+# Install role packages dependencies
+
+- name: "Nginx | Always | Install packages"
+  ansible.builtin.include_tasks: "always/install/{{ dist_pkg_mgr }}.yml"
+  when:
+    - nginx_always_packages | is_ne_list
+  tags:
+    - always

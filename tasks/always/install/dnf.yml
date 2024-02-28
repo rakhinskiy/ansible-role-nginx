@@ -1,0 +1,11 @@
+# code: language=ansible
+---
+
+- name: "Nginx | Always | Install dependencies | Dnf"
+  ansible.builtin.dnf:
+    name: "{{ nginx_always_packages }}"
+    state: present
+    update_cache: true
+  become: true
+  tags:
+    - always

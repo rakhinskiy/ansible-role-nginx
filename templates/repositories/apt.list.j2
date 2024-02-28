@@ -1,0 +1,2 @@
+#jinja2: lstrip_blocks: "True", trim_blocks: "True"
+{{ item.type | default('deb') }} {% if item.options is defined %}[{{ item.options.items() | map("join", "=") | join(" ") }}]{% endif %} {{ item.url }}

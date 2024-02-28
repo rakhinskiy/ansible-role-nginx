@@ -1,0 +1,41 @@
+server {
+
+  server_name __default__;
+
+  listen {{ item.vars.listen | default("0.0.0.0") }}:80 default_server;
+  {% if item.vars.ssl | default(false) %}
+  listen {{ item.vars.listen | default("0.0.0.0") }}:443 default_server ssl http2;
+
+  ssl_dhparam                  {{ item.vars.ssl_dhparam | default('/etc/nginx/ssl/nginx.dhparam') }};
+  ssl_certificate              {{ item.vars.ssl_certificate }};
+  ssl_certificate_key          {{ item.vars.ssl_certificate_key }};
+  ssl_session_timeout          {{ item.vars.ssl_session_timeout | default("60m") }};
+  ssl_prefer_server_ciphers    {{ item.vars.ssl_prefer_server_ciphers | default("on") }};
+  ssl_stapling                 {{ item.vars.ssl_stapling | default("off") }};
+  ssl_stapling_verify          {{ item.vars.ssl_stapling_verify | default("off") }};
+  ssl_session_cache            {{ item.vars.ssl_session_cache | default("shared:SSL:8m") }};
+  ssl_protocols                {{ item.vars.ssl_protocols | default("TLSv1 TLSv1.1 TLSv1.2 TLSv1.3") }};
+  ssl_ecdh_curve               {{ item.vars.ssl_ecdh_curve | default("secp384r1") }};
+  ssl_ciphers                  '{{ item.vars.ssl_ciphers | default("EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH:EECDH+AESGCM+AES128") }}';
+  ssl_session_tickets          {{ item.vars.ssl_session_tickets | default("off") }};;
+  ssl_buffer_size              {{ item.vars.ssl_buffer_size | default("4k") }};
+  {% endif %}
+
+  server_tokens                {{ item.vars.server_tokens | default("off") }};
+  charset                      {{ item.vars.charset | default("utf-8") }};
+  chunked_transfer_encoding    {{ item.vars.chunked_transfer_encoding | default("on") }};
+  client_max_body_size         {{ item.vars.client_max_body_size | default("32M") }};
+
+  root                         {{ item.vars.root | default("/usr/share/nginx/html") }};
+  index                        {{ item.vars.index | default("index.html") }};
+  access_log                   {{ item.vars.access_log | default("/var/log/nginx/access.log") }} {{ item.vars.access_log_format | default("main") }};
+  error_log                    {{ item.vars.error_log | default("/var/log/nginx/error.log") }};
+
+  location /.well-known {
+    root /usr/share/nginx/html;
+    auth_basic          off;
+    allow all;
+  }
+
+  return 200;
+}

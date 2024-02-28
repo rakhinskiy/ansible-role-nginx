@@ -1,0 +1,12 @@
+# code: language=ansible
+---
+
+- name: "Nginx | Install | Dnf / Yum"
+  ansible.builtin.dnf:
+    name: "{{ nginx_packages[nginx_branch] }}"
+    state: present
+    update_cache: false
+  become: true
+  tags:
+    - nginx
+    - nginx-install

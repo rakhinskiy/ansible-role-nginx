@@ -1,2 +1,109 @@
 # code: language=ansible
 ---
+
+# 00 # Always
+##############################################################################
+
+# Fix sudo error when hostname changed
+ansible_become_flags: "--host=127.0.0.1 --set-home"
+
+dist_name: "{{ ansible_distribution | lower | replace('linux', '') }}"
+dist_version: "{{ ansible_distribution_major_version }}"
+dist_codename: "{{ ansible_lsb.codename | default() | lower }}"
+dist_pkg_mgr: "{{ ansible_pkg_mgr | lower }}"
+
+# 01 # Repositories
+##############################################################################
+
+# stable / mainline / sys (not implemented yet)
+nginx_branch: "stable"
+
+nginx_repositories:
+  stable:
+    apt:
+      - name: "nginx"
+        url: "https://nginx.org/packages/{{ dist_name }} {{ dist_codename }} nginx"
+        key: "https://nginx.org/keys/nginx_signing.key"
+        options:
+          arch: "amd64"
+    dnf:
+      - name: "nginx"
+        url: "https://nginx.org/packages/centos/$releasever/$basearch/"
+        key: "https://nginx.org/keys/nginx_signing.key"
+        options:
+          enabled: "1"
+          gpgcheck: "1"
+          module_hotfixes: "1"
+  mainline:
+    apt:
+      - name: "nginx"
+        url: "https://nginx.org/packages/mainline/{{ dist_name }} {{ dist_codename }} nginx"
+        key: "https://nginx.org/keys/nginx_signing.key"
+        options:
+          arch: "amd64"
+    dnf:
+      - name: "nginx"
+        url: "https://nginx.org/packages/mainline/centos/$releasever/$basearch/"
+        key: "https://nginx.org/keys/nginx_signing.key"
+        options:
+          enabled: "1"
+          gpgcheck: "1"
+          module_hotfixes: "1"
+
+# 02 # Install
+##############################################################################
+
+nginx_packages:
+  stable:
+    - "nginx"
+    - "nginx-module-njs"
+    - "certbot"
+  mainline:
+    - "nginx"
+    - "nginx-module-njs"
+    - "certbot"
+
+# 03 # Configure
+###############################################################################
+
+nginx_daemon: "on"
+nginx_error_log: "/var/log/nginx/error.log"
+nginx_error_log_level: "notice"
+nginx_pid: "/var/run/nginx.pid"
+nginx_master_process: "on"
+
+nginx_user: "nginx"
+nginx_group: "nginx"
+
+nginx_worker_priority: "0"
+nginx_worker_processes: "auto"
+nginx_worker_rlimit_core: ~
+nginx_worker_rlimit_nofile: "1024"
+nginx_worker_shutdown_timeout: ~
+
+nginx_events_accept_mutex: "off"
+nginx_events_accept_mutex_delay: "500ms"
+nginx_events_worker_aio_requests: "32"
+nginx_events_worker_connections: "1024"
+nginx_working_directory: ~
+
+nginx_http_default_type: "application/octet-stream"
+nginx_http_access_log: "/var/log/nginx/access.log"
+nginx_http_access_log_format: "main"
+
+nginx_http_server_tokens: "off"
+nginx_http_charset: "utf-8"
+nginx_http_chunked_transfer_encoding: "on"
+nginx_http_client_max_body_size: "32M"
+nginx_http_client_body_buffer_size: "32M"
+
+nginx_http_sendfile: "on"
+nginx_http_keepalive_timeout: "65"
+
+nginx_certs: []
+
+nginx_http:
+  maps: []
+  servers: []
+
+nginx_streams: []

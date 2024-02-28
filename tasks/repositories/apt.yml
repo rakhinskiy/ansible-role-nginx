@@ -1,0 +1,44 @@
+# code: language=ansible
+
+---
+
+- name: "Nginx | Repositories | Apt | GPG Keys"
+  ansible.builtin.apt_key:
+    url: "{{ item.key }}"
+    state: present
+  with_items: "{{ nginx_repositories[nginx_branch]['apt'] }}"
+  when:
+    - nginx_repositories | is_ne_dict
+    - nginx_branch in nginx_repositories
+    - '"apt" in nginx_repositories[nginx_branch]'
+    - item.key is defined
+  become: true
+  tags:
+    - nginx
+    - nginx-repositories
+
+- name: "Nginx | Repositories | Apt | Add repository"
+  ansible.builtin.template:
+    src: "repositories/apt.list.j2"
+    dest: "/etc/apt/sources.list.d/{{ item.name }}.list"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+    backup: false
+  with_items: "{{ nginx_repositories[nginx_branch]['apt'] }}"
+  when:
+    - nginx_repositories | is_ne_dict
+    - nginx_branch in nginx_repositories
+    - '"apt" in nginx_repositories[nginx_branch]'
+  notify:
+    - Update apt cache
+  become: true
+  tags:
+    - nginx
+    - nginx-repositories
+
+- name: "Nginx | Repositories | Apt | Flush handlers"
+  ansible.builtin.meta: flush_handlers
+  tags:
+    - nginx
+    - nginx-repositories

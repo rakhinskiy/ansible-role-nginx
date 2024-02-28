@@ -1,0 +1,11 @@
+#jinja2: lstrip_blocks: "True", trim_blocks: "True"
+
+[{{ item.name }}]
+name = {{ item.name }}
+baseurl = {{ item.url }}
+{% if item.key %}
+gpgkey = {{ item.key }}
+{% endif %}
+{% for key, value in item.options.items() %}
+{{ key }} = {{ value }}
+{% endfor %}

@@ -1,0 +1,12 @@
+# code: language=ansible
+---
+
+# 00 # Always
+
+nginx_always_packages:
+  - "apt-transport-https"
+  - "ca-certificates"
+  - "gnupg2"
+  - "procps"
+  - "python3-apt"
+  - "virt-what"

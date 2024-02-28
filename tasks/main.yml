@@ -1,2 +1,34 @@
 # code: language=ansible
 ---
+
+# 00 # Always
+
+- name: "Nginx | Always"
+  ansible.builtin.include_tasks: "always/main.yml"
+  tags:
+    - always
+    - nginx
+
+# 01 # Repositories
+
+- name: "Nginx | Repositories"
+  ansible.builtin.include_tasks: "repositories/{{ dist_pkg_mgr }}.yml"
+  tags:
+    - nginx
+    - nginx-repositories
+
+# 02 # Install
+
+- name: "Nginx | Install"
+  ansible.builtin.include_tasks: "install/{{ dist_pkg_mgr }}.yml"
+  tags:
+    - nginx
+    - nginx-install
+
+# 03 # Configure
+
+- name: "Nginx | Configure"
+  ansible.builtin.include_tasks: "configure/main.yml"
+  tags:
+    - nginx
+    - nginx-configure

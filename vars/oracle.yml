@@ -1,0 +1,12 @@
+---
+# code: language=ansible
+
+# 00 # Always
+
+nginx_always_packages:
+  - "dnf-utils"
+  - "oracle-epel-release-el{{ dist_version }}"
+  - "procps-ng"
+  - "python3-libselinux"
+  - "python3-policycoreutils"
+  - "virt-what"

@@ -1,0 +1,117 @@
+# Ansible generated file
+
+daemon                 {{ nginx_daemon }};
+user                   {{ nginx_user }} {{ nginx_group }};
+master_process         {{ nginx_master_process }};
+worker_priority        {{ nginx_worker_priority }};
+worker_processes       {{ nginx_worker_processes }};
+worker_rlimit_nofile   {{ nginx_worker_rlimit_nofile }};
+
+{% if nginx_worker_rlimit_core %}
+worker_rlimit_core     {{ nginx_worker_rlimit_core }};
+{% endif %}
+
+{% if nginx_worker_shutdown_timeout %}
+worker_shutdown_timeout {{ nginx_worker_shutdown_timeout }};
+{% endif %}
+
+{% if nginx_working_directory %}
+working_directory      {{ nginx_working_directory }};
+{% endif %}
+
+error_log              {{ nginx_error_log }} {{ nginx_error_log_level }};
+pid                    {{ nginx_pid }};
+
+{% for env in nginx_env | default([]) %}
+env {{ env.name }}="{{ env.value }}";
+{% endfor %}
+
+{% for module in nginx_modules | default([]) %}
+load_module {{ module.file }};
+{% endfor %}
+
+events {
+  accept_mutex         {{ nginx_events_accept_mutex }};
+  accept_mutex_delay   {{ nginx_events_accept_mutex_delay }};
+  worker_aio_requests  {{ nginx_events_worker_aio_requests }};
+  worker_connections   {{ nginx_events_worker_connections }};
+}
+
+stream {
+  include              /etc/nginx/stream.d/upstreams/*.conf;
+  include              /etc/nginx/stream.d/servers/*.conf;
+}
+
+mail {
+  include              /etc/nginx/mail.d/upstreams/*.conf;
+  include              /etc/nginx/mail.d/servers/*.conf;
+}
+
+http {
+
+  include              /etc/nginx/mime.types;
+
+  log_format main '$remote_addr - $remote_user [$time_local] "$request" '
+                  '$status $body_bytes_sent "$http_referer" '
+                  '"$http_user_agent" "$http_x_forwarded_for"';
+
+  log_format json escape=json
+  '{'
+    '"timestamp":"$time_iso8601",'
+    '"data":{'
+      '"timestamp_local":"$time_local",'
+      '"server_name":"$server_name",'
+      '"request_full": "$request",'
+      '"request": {'
+        '"user_agent":"$http_user_agent",'
+        '"http_host":"$http_host",'
+        '"uri":"$request_uri",'
+        '"scheme": "$scheme",'
+        '"method":"$request_method",'
+        '"length":"$request_length",'
+        '"time": "$request_time",'
+        '"referrer":"$http_referer"'
+      '},'
+      '"response": {'
+        '"status": "$status",'
+        '"body_bytes_sent":"$body_bytes_sent",'
+        '"content_type":"$sent_http_content_type"'
+      '},'
+      '"remote": {'
+        '"addr": "$remote_addr",'
+        '"port": "$remote_port",'
+        '"user": "$remote_user"'
+      '},'
+      '"upstream": {'
+        '"addr": "$upstream_addr",'
+        '"bytes_received": "$upstream_bytes_received",'
+        '"bytes_send": "$upstream_bytes_sent",'
+        '"cache_status":"$upstream_cache_status",'
+        '"connect_time":"$upstream_connect_time",'
+        '"header_time":"$upstream_header_time",'
+        '"response_length":"$upstream_response_length",'
+        '"response_time":"$upstream_response_time",'
+        '"status": "$upstream_status",'
+        '"content_type":"$upstream_http_content_type"'
+      '}'
+    '}'
+  '}';
+
+  server_tokens                {{ nginx_http_server_tokens }};
+  charset                      {{ nginx_http_charset }};
+  chunked_transfer_encoding    {{ nginx_http_chunked_transfer_encoding }};
+  client_max_body_size         {{ nginx_http_client_max_body_size }};
+  client_body_buffer_size      {{ nginx_http_client_body_buffer_size }};
+
+  default_type                 {{ nginx_http_default_type }};
+
+
+  access_log                   {{ nginx_http_access_log }} {{ nginx_http_access_log_format }};
+
+  sendfile                     {{ nginx_http_sendfile }};
+  keepalive_timeout            {{ nginx_http_keepalive_timeout }};
+
+  include                      /etc/nginx/http.d/maps/*.conf;
+  include                      /etc/nginx/http.d/upstreams/*.conf;
+  include                      /etc/nginx/http.d/servers/*.conf;
+}

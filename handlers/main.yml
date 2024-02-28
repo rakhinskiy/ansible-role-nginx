@@ -1,2 +1,25 @@
 # code: language=ansible
 ---
+
+- name: "Restart nginx"
+  ansible.builtin.service:
+    name: "nginx"
+    state: restarted
+  become: true
+
+- name: "Reload nginx"
+  ansible.builtin.service:
+    name: "nginx"
+    state: reloaded
+  become: true
+
+- name: "Update apt cache"
+  ansible.builtin.apt:
+    update_cache: true
+    force_apt_get: true
+  become: true
+
+- name: "Update dnf cache"
+  ansible.builtin.dnf:
+    update_cache: true
+  become: true

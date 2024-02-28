@@ -1,0 +1,139 @@
+# code: language=ansible
+
+---
+
+- name: "Nginx | Configure | Create dirs"
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: "directory"
+    owner: "root"
+    mode: "755"
+    force: "no"
+    follow: true
+  become: true
+  with_items:
+    - "/etc/nginx/mail.d/upstreams"
+    - "/etc/nginx/mail.d/servers"
+    - "/etc/nginx/http.d/maps"
+    - "/etc/nginx/http.d/upstreams"
+    - "/etc/nginx/http.d/servers"
+    - "/etc/nginx/stream.d/upstreams"
+    - "/etc/nginx/stream.d/servers"
+    - "/etc/nginx/ssl"
+  tags:
+    - nginx
+    - nginx-configure
+
+# TODO: Need refactoring / Maybe use separate crt | keys tasks
+- name: "Nginx | Configure | Upload certificates"
+  ansible.builtin.copy:
+    content: "{{ item.data }}"
+    dest: "/etc/nginx/ssl/{{ item.name }}"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+    backup: false
+  notify: Reload nginx
+  become: true
+  with_items: "{{ nginx_certs }}"
+  when:
+    - nginx_certs | is_ne_list
+  tags:
+    - nginx
+    - nginx-configure
+
+- name: "Nginx | Configure | Stream | Upstreams"
+  ansible.builtin.template:
+    src: "nginx/stream.d/upstream.conf.j2"
+    dest: "/etc/nginx/stream.d/upstreams/{{ item.name }}.conf"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+    backup: false
+  notify: Reload nginx
+  become: true
+  with_items: "{{ nginx_stream.upstreams }}"
+  when:
+    - nginx_stream.upstreams is defined
+    - nginx_stream.upstreams | is_ne_list
+  tags:
+    - nginx
+    - nginx-configure
+
+- name: "Nginx | Configure | Stream | Servers"
+  ansible.builtin.template:
+    src: "nginx/stream.d/server.conf.j2"
+    dest: "/etc/nginx/stream.d/servers/{{ item.name }}.conf"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+    backup: false
+  notify: Reload nginx
+  become: true
+  with_items: "{{ nginx_stream.servers }}"
+  when:
+    - nginx_stream.servers is defined
+    - nginx_stream.servers | is_ne_list
+  tags:
+    - nginx
+    - nginx-configure
+
+- name: "Nginx | Configure | HTTP | Maps"
+  ansible.builtin.template:
+    src: "nginx/http.d/maps.conf.j2"
+    dest: "/etc/nginx/http.d/maps/{{ item.name }}.conf"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+    backup: false
+  notify: Reload nginx
+  become: true
+  with_items: "{{ nginx_http.maps }}"
+  when:
+    - nginx_http.maps is defined
+    - nginx_http.maps | is_ne_list
+  tags:
+    - nginx
+    - nginx-configure
+
+- name: "Nginx | Configure | HTTP | Servers"
+  ansible.builtin.template:
+    src: "{{ item.template }}.conf.j2"
+    dest: "/etc/nginx/http.d/servers/{{ item.name }}.conf"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+    backup: false
+  notify: Reload nginx
+  become: true
+  with_items: "{{ nginx_http.servers | default([]) }}"
+  when:
+    - nginx_http.servers is defined
+    - nginx_http.servers | is_ne_list
+  tags:
+    - nginx
+    - nginx-configure
+
+- name: "Nginx | Configure | nginx.conf"
+  ansible.builtin.template:
+    src: "nginx/nginx.conf.j2"
+    dest: "/etc/nginx/nginx.conf"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+    backup: false
+  notify: Reload nginx
+  become: true
+  tags:
+    - nginx
+    - nginx-configure
+
+- name: "Nginx | Configure | Start service"
+  ansible.builtin.service:
+    name: "nginx"
+    state: started
+    enabled: true
+  become: true
+  tags:
+    - nginx
+    - nginx-configure

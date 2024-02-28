@@ -1,0 +1,4 @@
+map {{ item.string }} {{ item.variable }} {
+  {% for rule in item.rules %}{{ rule.get_string }} "{{ rule.set_value }}";
+  {% endfor %}
+}

@@ -1,0 +1,29 @@
+ignore = [
+  "E501",
+  "FBT",
+  "A",
+  "ANN",
+  "ARG",
+  "B",
+  "BLE001",
+  "C901",
+  "D",
+  "E741",
+  "EM",
+  "INP",
+  "N",
+  "PERF203",
+  "PGH",
+  "PLR",
+  "PLW",
+  "PT",
+  "PTH",
+  "RET",
+  "SIM",
+  "SLF",
+  "T",
+  "TRY",
+]
+select = ["ALL"]
+target-version = "py37"
+line-length = 79

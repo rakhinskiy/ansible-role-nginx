@@ -96,6 +96,24 @@
     - nginx
     - nginx-configure
 
+- name: "Nginx | Configure | HTTP | Upstreams"
+  ansible.builtin.template:
+    src: "nginx/http.d/upstream.conf.j2"
+    dest: "/etc/nginx/http.d/upstreams/{{ item.name }}.conf"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+    backup: false
+  notify: Reload nginx
+  become: true
+  with_items: "{{ nginx_http.upstreams }}"
+  when:
+    - nginx_http.upstreams is defined
+    - nginx_http.upstreams | is_ne_list
+  tags:
+    - nginx
+    - nginx-configure
+
 - name: "Nginx | Configure | HTTP | Servers"
   ansible.builtin.template:
     src: "{{ item.template }}.conf.j2"

@@ -104,6 +104,7 @@ nginx_certs: []
 
 nginx_http:
   maps: []
+  upstreams: []
   servers: []
 
 nginx_streams:

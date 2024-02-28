@@ -128,6 +128,17 @@ nginx_http:
           set_value: "0"
         - get_string: "default"
           set_value: "1"
+  upstreams:
+    - name: "kube_ingress_http"
+      servers:
+        - "10.0.0.11:80"
+        - "10.0.0.12:80"
+        - "10.0.0.13:80"
+    - name: "kube_ingress_https"
+      servers:
+        - "10.0.0.11:443"
+        - "10.0.0.12:443"
+        - "10.0.0.13:443"
   servers:
     - name: "com.example"
       # Your own template (add extension .conf.j2 to file)

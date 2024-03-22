@@ -1,6 +1,6 @@
 server {
     listen {{ item.listen }};
     proxy_pass {{ item.proxy_pass }};
-    {% if item.proxy_protocol == true %}proxy_protocol on;
-    {% endif %}
+{% if item.proxy_protocol == true %}    proxy_protocol on;
+{% endif -%}
 }

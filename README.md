@@ -91,7 +91,7 @@ nginx_certs:
 #        proxy_pass kube_api_https;
 #    }
 #}
-nginx_streams:
+nginx_stream:
   upstreams:
     - name: "kube_api_https"
       servers:

@@ -42,6 +42,21 @@
     - nginx
     - nginx-configure
 
+- name: "Nginx | Configure | Stream | Remove Upstreams"
+  ansible.builtin.file:
+    path: "/etc/nginx/stream.d/upstreams/{{ item.name }}.conf"
+    state: absent
+  notify: Reload nginx
+  become: true
+  with_items: "{{ nginx_stream.upstreams }}"
+  when:
+    - nginx_stream.upstreams is defined
+    - nginx_stream.upstreams | is_ne_list
+    - item.state | default("present") == "absent"
+  tags:
+    - nginx
+    - nginx-configure
+
 - name: "Nginx | Configure | Stream | Upstreams"
   ansible.builtin.template:
     src: "nginx/stream.d/upstream.conf.j2"
@@ -56,6 +71,22 @@
   when:
     - nginx_stream.upstreams is defined
     - nginx_stream.upstreams | is_ne_list
+    - item.state | default("present") == "present"
+  tags:
+    - nginx
+    - nginx-configure
+
+- name: "Nginx | Configure | Stream | Remove Servers"
+  ansible.builtin.file:
+    path: "/etc/nginx/stream.d/servers/{{ item.name }}.conf"
+    state: absent
+  notify: Reload nginx
+  become: true
+  with_items: "{{ nginx_stream.servers }}"
+  when:
+    - nginx_stream.servers is defined
+    - nginx_stream.servers | is_ne_list
+    - item.state | default("present") == "absent"
   tags:
     - nginx
     - nginx-configure
@@ -74,6 +105,22 @@
   when:
     - nginx_stream.servers is defined
     - nginx_stream.servers | is_ne_list
+    - item.state | default("present") == "present"
+  tags:
+    - nginx
+    - nginx-configure
+
+- name: "Nginx | Configure | HTTP | Remove Maps"
+  ansible.builtin.file:
+    path: "/etc/nginx/http.d/maps/{{ item.name }}.conf"
+    state: absent
+  notify: Reload nginx
+  become: true
+  with_items: "{{ nginx_http.maps }}"
+  when:
+    - nginx_http.maps is defined
+    - nginx_http.maps | is_ne_list
+    - item.state | default("present") == "absent"
   tags:
     - nginx
     - nginx-configure
@@ -92,6 +139,22 @@
   when:
     - nginx_http.maps is defined
     - nginx_http.maps | is_ne_list
+    - item.state | default("present") == "present"
+  tags:
+    - nginx
+    - nginx-configure
+
+- name: "Nginx | Configure | HTTP | Remove Upstreams"
+  ansible.builtin.file:
+    path: "/etc/nginx/http.d/upstreams/{{ item.name }}.conf"
+    state: absent
+  notify: Reload nginx
+  become: true
+  with_items: "{{ nginx_http.upstreams }}"
+  when:
+    - nginx_http.upstreams is defined
+    - nginx_http.upstreams | is_ne_list
+    - item.state | default("present") == "absent"
   tags:
     - nginx
     - nginx-configure
@@ -110,6 +173,22 @@
   when:
     - nginx_http.upstreams is defined
     - nginx_http.upstreams | is_ne_list
+    - item.state | default("present") == "present"
+  tags:
+    - nginx
+    - nginx-configure
+
+- name: "Nginx | Configure | HTTP | Remove Servers"
+  ansible.builtin.file:
+    path: "/etc/nginx/http.d/servers/{{ item.name }}.conf"
+    state: absent
+  notify: Reload nginx
+  become: true
+  with_items: "{{ nginx_http.servers | default([]) }}"
+  when:
+    - nginx_http.servers is defined
+    - nginx_http.servers | is_ne_list
+    - item.state | default("present") == "absent"
   tags:
     - nginx
     - nginx-configure
@@ -128,6 +207,7 @@
   when:
     - nginx_http.servers is defined
     - nginx_http.servers | is_ne_list
+    - item.state | default("present") == "present"
   tags:
     - nginx
     - nginx-configure

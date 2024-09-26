@@ -4,14 +4,14 @@
 
 - name: "Nginx | Repositories | Apt | GPG Keys"
   ansible.builtin.apt_key:
-    url: "{{ item.key }}"
+    url: "{{ item.gpg }}"
     state: present
   with_items: "{{ nginx_repositories[nginx_branch]['apt'] }}"
   when:
     - nginx_repositories | is_ne_dict
     - nginx_branch in nginx_repositories
     - '"apt" in nginx_repositories[nginx_branch]'
-    - item.key is defined
+    - item.gpg is defined
   become: true
   tags:
     - nginx

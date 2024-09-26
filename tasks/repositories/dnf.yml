@@ -4,20 +4,20 @@
 
 - name: "Nginx | Repositories | Dnf / Yum | GPG Keys"
   ansible.builtin.rpm_key:
-    key: "{{ item.key }}"
+    key: "{{ item.gpg }}"
     state: present
   with_items: "{{ nginx_repositories[nginx_branch]['dnf'] }}"
   when:
     - nginx_repositories | is_ne_dict
     - nginx_branch in nginx_repositories
     - '"dnf" in nginx_repositories[nginx_branch]'
-    - item.key is defined
+    - item.gpg is defined
   become: true
   tags:
     - nginx
     - nginx-repositories
 
-- name: "Common | Repositories | Dnf / Yum | Add repository"
+- name: "Nginx | Repositories | Dnf / Yum | Add repository"
   ansible.builtin.template:
     src: "repositories/dnf.repo.j2"
     dest: "/etc/yum.repos.d/{{ item.name }}.repo"
